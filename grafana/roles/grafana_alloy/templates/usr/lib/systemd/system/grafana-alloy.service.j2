@@ -12,7 +12,7 @@ Environment=HOSTNAME={{ inventory_hostname }}
 Environment=AGENT_DEPLOY_MODE=rpm
 WorkingDirectory={{ grafana_alloy_install_dir }}/var/lib/grafana-alloy
 Type=simple
-ExecStart={{ grafana_alloy_install_dir }}/bin/grafana-alloy-amd64 run --server.http.listen-addr=127.0.0.1:{{ grafana_alloy_http_port }} --storage.path={{ grafana_alloy_install_dir }}/var/lib/grafana-alloy --disable-reporting {{ grafana_alloy_args }} {{ grafana_alloy_install_dir }}/etc/grafana-alloy.alloy
+ExecStart={{ grafana_alloy_install_dir }}/bin/alloy-linux-amd64 run --server.http.listen-addr=127.0.0.1:{{ grafana_alloy_http_port }} --storage.path={{ grafana_alloy_install_dir }}/var/lib/grafana-alloy --disable-reporting {{ grafana_alloy_args }} {{ grafana_alloy_install_dir }}/etc/grafana-alloy.alloy
 ExecReload=/usr/bin/env kill -HUP $MAINPID
 TimeoutStopSec=20s
 SendSIGKILL=no

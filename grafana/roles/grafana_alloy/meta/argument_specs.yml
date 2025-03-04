@@ -1,0 +1,134 @@
+argument_specs:
+  main:
+    short_description: Main entry point for the grafana_alloy role
+    description:
+      - This is the main entrypoint for the monitoring.grafana_alloy role.
+      - It call all the tasks required to install, configure
+        or uninstall the grafana_alloy role.
+    author:
+      - chilly.tower@gmail.com
+    options:
+      grafana_alloy_required_packages:
+        type: list
+        elements: str
+        description: "List of required packages to be installed."
+        default: ["unzip", "libuser"]
+
+      grafana_alloy_validate_certs:
+        type: bool
+        description: "If false, SSL certificates will not be validated."
+        default: true
+
+      grafana_alloy_version:
+        type: str
+        description: "Version of Grafana Alloy to install."
+        default: "1.6.1"
+
+      grafana_alloy_pkg_url:
+        type: str
+        description: "URL to download Grafana Alloy package."
+        default: "https://github.com/grafana/alloy/releases/download/v{{ grafana_alloy_version }}/alloy-linux-amd64.zip"
+
+      grafana_alloy_checksum_url:
+        type: str
+        description: "URL to download SHA256SUMS file."
+        default: "https://github.com/grafana/alloy/releases/download/v{{ grafana_alloy_version }}/SHA256SUMS"
+
+      grafana_alloy_install_dir:
+        type: str
+        description: "Path for Grafana Alloy files and directories."
+        default: "/opt/grafana/alloy"
+
+      grafana_alloy_user:
+        type: str
+        description: "User to run Grafana Alloy service."
+        default: "grafana-alloy"
+
+      grafana_alloy_group:
+        type: str
+        description: "Group to run Grafana Alloy service."
+        default: "grafana-alloy"
+
+      grafana_alloy_supported_os:
+        type: dict
+        description: "Supported operating systems."
+        default:
+          AlmaLinux: ["8", "9"]
+          CentOS: ["7"]
+          Ubuntu: ["22"]
+
+      grafana_alloy_prechecks:
+        type: bool
+        description: "Perform prechecks before installation."
+        default: true
+
+      grafana_alloy_install:
+        type: bool
+        description: "Perform installation."
+        default: true
+
+      grafana_alloy_configure:
+        type: bool
+        description: "Perform configuration."
+        default: true
+
+      grafana_alloy_uninstall:
+        type: bool
+        description: "Perform uninstallation."
+        default: false
+
+      grafana_alloy_http_port:
+        type: int
+        description: "HTTP server listen port."
+        default: 9090
+
+      grafana_alloy_integration:
+        type: dict
+        description: "Configurations for Grafana Alloy integrations."
+        default:
+          enabled: true
+          agent:
+            enabled: true
+          node_exporter:
+            enabled: true
+            enable_collectors: []
+            disable_collectors: []
+
+      grafana_alloy_remote_write:
+        type: dict
+        description: "Configurations for Grafana Alloy remote write."
+        default:
+          enabled: false
+          label: "grafana_alloy"
+          url: ""
+          timeout: "30s"
+          tls_skip_verify: true
+          basic_auth:
+            enabled: false
+            username: ""
+            password: ""
+
+      grafana_alloy_scrape:
+        type: dict
+        description: "Configurations for Grafana Alloy scraping."
+        default:
+          enabled: false
+          prometheus_scrape_config: ""
+          interval: "15s"
+          timeout: "10s"
+
+      grafana_alloy_prometheus_scrape_config:
+        type: str
+        description: "Prometheus scrape config for Grafana Alloy."
+        default: ""
+
+      grafana_alloy_args:
+        type: str
+        description: "Extra arguments for Grafana Alloy."
+        default: ""
+
+      grafana_alloy_loglevel:
+        type: str
+        description: "Log level for Grafana Alloy service."
+        default: "info"
+

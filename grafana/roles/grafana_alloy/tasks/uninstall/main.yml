@@ -1,0 +1,53 @@
+---
+# Grafana Alloy uninstallation
+- name: Grafana Alloy uninstallation
+  tags:
+    - uninstall
+  block:
+
+    # Populate service facts
+    - name: Populate service facts
+      ansible.builtin.service_facts:
+
+    # Disable and stop Grafana Alloy service if it exists
+    - name: Disable and stop Grafana Alloy service if it exists
+      ansible.builtin.service:
+        name: grafana-alloy
+        state: stopped
+        enabled: false
+        daemon_reload: true
+      when:
+        - ansible_facts['services']['grafana-alloy.service'] is defined
+
+    # Remove Grafana Alloy user
+    - name: Remove Grafana Alloy user
+      ansible.builtin.user:
+        name: "{{ grafana_alloy_user }}"
+        state: absent
+        local: true
+        remove: true
+
+    # Remove Grafana Alloy group
+    - name: Remove Grafana Alloy group
+      ansible.builtin.group:
+        name: "{{ grafana_alloy_group }}"
+        state: absent
+        local: true
+
+    # Remove file/dir for Grafana Alloy
+    - name: Remove file/dir for Grafana Alloy
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: absent
+      loop:
+        - /usr/lib/systemd/system/grafana-alloy.service
+        - /etc/rc.d/init.d/grafana-alloy
+        - "{{ grafana_alloy_install_dir }}"
+
+  rescue:
+
+    # Unable to uninstall Grafana Alloy
+    - name: Unable to uninstall Grafana Alloy
+      ansible.builtin.fail:
+        msg: Unable to uninstall Grafana Alloy
+

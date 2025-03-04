@@ -1,0 +1,87 @@
+{% if __grafana_alloy_scrape.enabled %}
+{{ __grafana_alloy_scrape.prometheus_scrape_config }}
+{% endif %}
+
+{% if __grafana_alloy_remote_write.enabled %}
+prometheus.remote_write "{{ __grafana_alloy_remote_write.label }}"
+        endpoint {
+                url             = "{{ __grafana_alloy_remote_write['url'] }}/api/v1/write"
+                remote_timeout  = "{{ __grafana_alloy_remote_write.timeout }}"
+
+{% if __grafana_alloy_remote_write.basic_auth.enabled %}
+                basic_auth {
+                        username: "{{ __grafana_alloy_remote_write.basic_auth.username }}"
+                        password: "{{ __grafana_alloy_remote_write.basic_auth.password }}"
+                }
+{% endif %}
+
+                tls_config {
+                        insecure_skip_verify = {{ 'true' if __grafana_alloy_remote_write.tls_skip_verify else 'false' }}
+                }
+
+                queue_config {
+                        batch_send_deadline = "30s"
+                }
+
+                metadata_config { }
+        }
+}
+{% endif %}
+
+logging {
+        level = "{{ grafana_alloy_loglevel }}"
+}
+
+{% if __grafana_alloy_integration.enabled %}
+{% if __grafana_alloy_integration.agent.enabled %}
+prometheus.exporter.self "integration_agent" { }
+
+discovery.relabel "integration_agent" {
+        targets = prometheus.exporter.self.integration_agent.targets
+
+        rule {
+                action          = "replace"
+                target_label    = "job"
+                replacement     = "integration/agent"
+        }
+}
+
+{% if __grafana_alloy_remote_write.enabled %}
+prometheus.scrape "integration_agent" {
+        targets     = discovery.relabel.integration_agent.output
+        forward_to  = [prometheus.remote_write.{{ __grafana_alloy_remote_write.label }}.receiver]
+        job_name    = "integration/agent"
+}
+{% endif %}
+{% endif %}
+
+{% __grafana_alloy_integration.node_exporter.enabled %}
+prometheus.exporter.unix "integration_node_exporter" {
+        include_exporter_metrics    = true
+{% __grafana_alloy_integration.node_exporter.disable_collectors|length > 0 %}
+        disable_collectors          = [{% for collector in __grafana_alloy_integration.node_exporter.disable_collectors %}"{{ collector }}"{% if not loop.last %}, {% endif %}{% endfor %}]
+{% endif %}
+{% __grafana_alloy_integration.node_exporter.enable_collectors|length > 0 %}
+        enable_collectors          = [{% for collector in __grafana_alloy_integration.node_exporter.enable_collectors %}"{{ collector }}"{% if not loop.last %}, {% endif %}{% endfor %}]
+{% endif %}
+}
+
+discovery.relabel "integration_node_exporter" {
+        targets = prometheus.exporter.self.integration_node_exporter.targets
+
+        rule {
+                action          = "replace"
+                target_label    = "job"
+                replacement     = "integration/node_exporter"
+        }
+}
+
+{% if __grafana_alloy_remote_write.enabled %}
+prometheus.scrape "integration_node_exporter" {
+        targets     = discovery.relabel.integration_node_exporter.output
+        forward_to  = [prometheus.remote_write.{{ __grafana_alloy_remote_write.label }}.receiver]
+        job_name    = "integration/node_exporter"
+}
+{% endif %}
+{% endif %}
+{% endif %}

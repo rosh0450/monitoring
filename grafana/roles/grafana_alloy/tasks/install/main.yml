@@ -1,0 +1,78 @@
+---
+# Grafana Alloy installation
+- name: Grafana Alloy installation
+  tags:
+    - install
+  block:
+
+    # Install required packages
+    - name: Install required packages
+      ansible.builtin.package:
+        name: "{{ grafana_alloy_required_packages }}"
+        state: present
+
+    # Create base directory
+    - name: Create base directory
+      ansible.builtin.file:
+        path: "{{ grafana_alloy_install_dir }}"
+        state: directory
+        owner: root
+        group: root
+        mode: '0755'
+
+    # Create Grafana Alloy group
+    - name: Create Grafana Alloy group
+      ansible.builtin.group:
+        name: "{{ grafana_alloy_group }}"
+        state: present
+        local: true
+
+    # Create Grafana Alloy user
+    - name: Create Grafana Alloy user
+      ansible.builtin.user:
+        name: "{{ grafana_alloy_user }}"
+        comment: Grafana Alloy user
+        state: present
+        local: true
+        create_home: false
+        home: "{{ grafana_alloy_install_dir }}"
+        shell: /sbin/nologin
+
+    # Create all required Grafana Alloy directory
+    - name: Create all required Grafana Alloy directory
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        owner: "{{ grafana_alloy_user }}"
+        group: "{{ grafana_alloy_group }}"
+        mode: '0755'
+      loop:
+        - "{{ grafana_alloy_install_dir }}/etc"
+        - "{{ grafana_alloy_install_dir }}/bin"
+        - "{{ grafana_alloy_install_dir }}/var/lib/grafana-alloy"
+        - "{{ grafana_alloy_install_dir }}/var/log"
+        - "{{ grafana_alloy_install_dir }}//var/run"
+        - "{{ grafana_alloy_install_dir }}/assets"
+
+    - name: Download Grafana Alloy package and match sha256sum
+      ansible.builtin.get_url:
+        url: "{{ grafana_alloy_pkg_url }}"
+        dest: "{{ grafana_alloy_install_dir }}/assets/alloy-linux-amd64.zip"
+        checksum: "sha265:{{ grafana_alloy_checksum_url }}"
+        mode: '0644'
+
+    - name: Unarchive Grafana Alloy package
+      ansible.builtin.unarchive:
+        src: "{{ grafana_alloy_install_dir }}/assets/alloy-linux-amd64.zip"
+        dest: "{{ grafana_alloy_install_dir }}/bin"
+        owner: "{{ grafana_alloy_user }}"
+        group: "{{ grafana_alloy_group }}"
+        mode: '0755'
+        remote_src: true
+
+  rescue:
+
+    # Unable to install Grafana Alloy
+    - name: Unable to install Grafana Alloy
+      ansible.builtin.fail:
+        msg: Unable to install Grafana Alloy

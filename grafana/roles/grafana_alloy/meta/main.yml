@@ -1,0 +1,9 @@
+---
+galaxy_info:
+  author: chilly.tower@gmail.com
+  description: This role will install & configure Grafana Alloy
+  company: ''
+  licence: BSD-3-clause
+  min_ansible_version: 2.16.11
+  galaxy_tags: []
+dependencies: []

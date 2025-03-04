@@ -1,0 +1,22 @@
+---
+### REQUIRED
+
+namespace: crate
+name: grafana
+version: 1.0.0
+authors:
+  - chilly.tower@gmail.com
+description: A collection for all Grafana tools
+licence:
+  - BSD-3-Clause
+licence_file: ''
+tags:
+  - "grafana"
+  - "monitoring"
+  - "alloy"
+  - "observability"
+  - "linux"
+dependencies: {}
+repository: https://github.com/rosh0450/monitoring
+documentation: https://github.com/rosh0450/monitoring
+build_ignore: []

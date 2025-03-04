@@ -1,0 +1,43 @@
+---
+
+# When grafana_alloy_uninstall is true chnage install & configure to false
+- name: When grafana_alloy_uninstall is true chnage install & configure to false
+  ansible.builtin.set_fact:
+    grafana_alloy_install: false
+    grafana_alloy_configure: false
+    grafana_alloy_prechecks: false
+  when:
+    - grafana_alloy_uninstall | bool is true
+
+# Grafana Alloy prechecks
+- name: Grafana Alloy prechecks
+  ansible.builtin.include_tasks: prechecks/main.yml
+  tags:
+    - always
+    - prechecks
+  when:
+    - grafana_alloy_prechecks | bool is true
+
+# Grafana Alloy install
+- name: Grafana Alloy install
+  ansible.builtin.include_tasks: install/main.yml
+  tags:
+    - install
+  when:
+    - grafana_alloy_install | bool is true
+
+# Grafana Alloy configure
+- name: Grafana Alloy configure
+  ansible.builtin.include_tasks: configure/main.yml
+  tags:
+    - configure
+  when:
+    - grafana_alloy_configure | bool is true
+
+# Grafana Alloy uninstall
+- name: Grafana Alloy uninstall
+  ansible.builtin.include_tasks: uninstall/main.yml
+  tags:
+    - uninstall
+  when:
+    - grafana_alloy_uninstall | bool is true

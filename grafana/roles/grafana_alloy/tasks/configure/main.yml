@@ -1,0 +1,60 @@
+---
+# Grafana Alloy configuration
+- name: Grafana Alloy configuration
+  tags:
+    - configure
+  block:
+
+    # Create logrotate configuration for Grafana Alloy
+    - name: Create logrotate configuration for Grafana Alloy
+      ansible.builtin.template:
+        src: etc/logrotate.d/grafana-alloy.j2
+        dest: /etc/logrotate.d/grafana-alloy
+        owner: root
+        group: root
+        mode: '0644'
+
+    # Create Grafana Alloy config
+    - name: Create Grafana Alloy config
+      ansible.builtin.template:
+        src: opt/grafana/etc/grafana-alloy.alloy.j2
+        dest: "{{ grafana_alloy_install_dir }}/etc/grafana-alloy.alloy"
+        owner: "{{ grafana_alloy_user }}"
+        group: "{{ grafana_alloy_group }}"
+        mode: '0640'
+      notify: 
+        - Restart Grafana Alloy service
+
+    # Create Grafana Alloy systemd service
+    - name: Create Grafana Alloy systemd service
+      ansible.builtin.template:
+        src: usr/lib/systemd/system/grafana-alloy.service.j2
+        dest: /usr/lib/systemd/system/grafana-alloy.service
+        owner: root
+        group: root
+        mode: '0644'
+      notify:
+        - Systemd daemon reload
+        - Restart Grafana Alloy service
+      when:
+        - ansible_facts["service_mgr"] == "systemd"
+
+    # Create Grafana Alloy init service
+    - name: Create Grafana Alloy init service
+      ansible.builtin.template:
+        src: etc/rc.d/init.d/grafana-alloy.j2
+        dest: /etc/rc.d/init.d/grafana-alloy
+        owner: root
+        group: root
+        mode: '0755'
+      notify:
+        - Restart Grafana Alloy service
+      when:
+        - ansible_facts["service_mgr"] != "systemd"
+
+  rescue:
+
+    # Unable to configure Grafana Alloy
+    - name: Unable to configure Grafana Alloy
+      ansible.builtin.fail:
+        msg: Unable to configure Grafana Alloy

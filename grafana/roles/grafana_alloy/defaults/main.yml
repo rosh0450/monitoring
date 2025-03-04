@@ -1,0 +1,98 @@
+---
+# List of required packages to be installed
+grafana_alloy_required_packages:
+  - unzip
+  - libuser
+
+# If false, SSL certificates will not be validated
+grafana_alloy_validate_certs: true
+
+# Version of Grafana Alloy to install
+grafana_alloy_version: "1.6.1"
+
+# URL to download Grafana Alloy package
+grafana_alloy_pkg_url: "https://github.com/grafana/alloy/releases/download/v{{ grafana_alloy_version }}/alloy-linux-amd64.zip"
+
+# URL to download SHA256SUMS file
+grafana_alloy_checksum_url: "https://github.com/grafana/alloy/releases/download/v{{ grafana_alloy_version }}/SHA256SUMS"
+
+# Path for Grafana Alloy files and directories
+grafana_alloy_install_dir: "/opt/grafana/alloy"
+
+# User to run Grafana Alloy service
+grafana_alloy_user: "grafana-alloy"
+
+# Group to run Grafana Alloy service
+grafana_alloy_group: "grafana-alloy"
+
+# Supported operating systems
+grafana_alloy_supported_os:
+  AlmaLinux:
+    - "8"
+    - "9"
+  CentOS:
+    - "7"
+  Ubuntu:
+    - "22"
+
+# Perform prechecks before installation
+grafana_alloy_prechecks: true
+
+# Perform installation
+grafana_alloy_install: true
+
+# Perform configuration
+grafana_alloy_configure: true
+
+# Perform uninstallation
+grafana_alloy_uninstall: false
+
+# HTTP server listen port
+grafana_alloy_http_port: 9090
+
+# Configurations for Grafana Alloy integrations
+grafana_alloy_integration: {}
+
+# Default values for Grafana Alloy integration
+grafana_alloy_integration_defaults:
+  enabled: true  # Enable Grafana Alloy integration
+  agent:
+    enabled: true  # Enable agent integration
+  node_exporter:
+    enabled: true  # Enable node exporter integration
+    enable_collectors: []  # List of enabled collectors
+    disable_collectors: []  # List of disabled collectors
+
+# Configurations for Grafana Alloy remote write
+grafana_alloy_remote_write: {}
+
+# Default values for Grafana Alloy remote write
+grafana_alloy_remote_write_defaults:
+  enabled: false  # Enable or disable remote write
+  label: "grafana_alloy"  # Label for remote write target
+  url: ""  # Remote write endpoint URL. Note: 'api/v1/write' will be auto appended
+  timeout: 30s  # Timeout for remote write
+  tls_skip_verify: true  # Skip TLS verification
+  basic_auth:
+    enabled: false  # Enable or disable basic authentication
+    username: ""  # Username for basic authentication
+    password: ""  # Password for basic authentication
+
+# Configurations for Grafana Alloy scraping
+grafana_alloy_scrape: {}
+
+# Default values for Grafana Alloy scraping
+grafana_alloy_scrape_defaults:
+  enabled: false  # Enable or disable scraping
+  prometheus_scrape_config: {}  # Prometheus scrape configuration
+  interval: 30s  # Scrape interval
+  timeout: 10s  # Scrape timeout
+
+# Prometheus scrape config for Grafana Alloy
+grafana_alloy_prometheus_scrape_config: {}
+
+# Extra arguments for Grafana Alloy
+grafana_alloy_args: ""
+
+# Log level for Grafana Alloy service
+grafana_alloy_loglevel: "info"

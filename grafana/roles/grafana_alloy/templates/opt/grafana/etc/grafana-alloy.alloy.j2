@@ -67,7 +67,7 @@ prometheus.exporter.unix "integration_node_exporter" {
 }
 
 discovery.relabel "integration_node_exporter" {
-        targets = prometheus.exporter.self.integration_node_exporter.targets
+        targets = prometheus.exporter.unix.integration_node_exporter.targets
 
         rule {
                 action          = "replace"

@@ -3,15 +3,15 @@
 {% endif %}
 
 {% if __grafana_alloy_remote_write.enabled %}
-prometheus.remote_write "{{ __grafana_alloy_remote_write.label }}"
+prometheus.remote_write "{{ __grafana_alloy_remote_write.label }}" {
         endpoint {
                 url             = "{{ __grafana_alloy_remote_write['url'] }}/api/v1/write"
                 remote_timeout  = "{{ __grafana_alloy_remote_write.timeout }}"
 
 {% if __grafana_alloy_remote_write.basic_auth.enabled %}
                 basic_auth {
-                        username: "{{ __grafana_alloy_remote_write.basic_auth.username }}"
-                        password: "{{ __grafana_alloy_remote_write.basic_auth.password }}"
+                        username = "{{ __grafana_alloy_remote_write.basic_auth.username }}"
+                        password = "{{ __grafana_alloy_remote_write.basic_auth.password }}"
                 }
 {% endif %}
 

@@ -4,6 +4,7 @@
 namespace: crate
 name: grafana
 version: 1.0.0
+readme: README.md
 authors:
   - chilly.tower@gmail.com
 description: A collection for all Grafana tools

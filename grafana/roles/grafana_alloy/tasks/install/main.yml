@@ -58,7 +58,7 @@
       ansible.builtin.get_url:
         url: "{{ grafana_alloy_pkg_url }}"
         dest: "{{ grafana_alloy_install_dir }}/assets/alloy-linux-amd64.zip"
-        checksum: "sha265:{{ grafana_alloy_checksum_url }}"
+        checksum: "sha256:{{ grafana_alloy_checksum_url }}"
         mode: '0644'
 
     - name: Unarchive Grafana Alloy package

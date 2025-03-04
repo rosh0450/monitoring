@@ -1,7 +1,7 @@
 ---
 ### REQUIRED
 
-namespace: crate
+namespace: monitoring
 name: grafana
 version: 1.0.0
 readme: README.md
